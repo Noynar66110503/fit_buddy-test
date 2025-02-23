@@ -19,6 +19,7 @@ let cer_part = path.join(process.cwd(), 'isrgrootx1 (1).pem');
 app.use(cors()); 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
   
 // MySQL Connection
 const db = mysql.createConnection({
@@ -38,10 +39,6 @@ db.connect((err) => {
     } else {
         console.log('Connected to MySQL');
     }
-});
-
-app.get('/', (req, res) => {
-    res.json({ message: "Backend API is running! Use endpoints like /api/profile/:id" });
 });
 
 // API endpoint to get user profile data by user_id
