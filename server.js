@@ -24,15 +24,35 @@ app.use(bodyParser.json());
 // MySQL Connection
 const db = mysql.createConnection({
     host: 'gateway01.us-west-2.prod.aws.tidbcloud.com',
-    user: '2h4VfjkR868Tumj.root', // แก้ไข
-    password: 'LR8Gk2mWSrazG8e3', // แก้ไข
+    user: '2h4VfjkR868Tumj.root',
+    password: 'LR8Gk2mWSrazG8e3',
     database: 'fit_buddy',
-    port: 4000,                  // ใช้ Port 4000 ตาม TiDB Cloud
-    ssl: { 
-        ca:fs.readFileSync(cer_part)
-    }// เปิดใช้งาน SSL เพื่อความปลอดภัย
+    port: 4000,
+    ssl: { rejectUnauthorized: true }
 });
 
+// ✅ เพิ่มการ reconnect อัตโนมัติเมื่อเกิด Timeout หรือ Disconnect
+function handleDisconnect() {
+    db.connect(err => {
+        if (err) {
+            console.error('❌ MySQL reconnect error:', err);
+            setTimeout(handleDisconnect, 5000); // รอ 5 วินาทีแล้วลองเชื่อมใหม่
+        } else {
+            console.log('✅ Reconnected to MySQL');
+        }
+    });
+}
+
+db.on('error', (err) => {
+    console.error('❌ MySQL connection error:', err);
+    if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT') {
+        handleDisconnect();
+    } else {
+        throw err;
+    }
+});
+
+module.exports = db;
 db.connect((err) => {
     if (err) {
         console.error('MySQL connection error:', err);
