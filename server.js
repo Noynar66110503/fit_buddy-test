@@ -40,6 +40,9 @@ db.connect((err) => {
         console.log('Connected to MySQL');
     }
 });
+app.get('/', (req, res) => {
+    res.json({ message: "Backend API is running! Use endpoints like /api/profile/:id" });
+});
 
 // API endpoint to get user profile data by user_id
 app.get('/api/profile/:user_id', (req, res) => {
