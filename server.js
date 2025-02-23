@@ -41,7 +41,8 @@ db.connect((err) => {
 });
 if (process.env.VERCEL_ENV) {
     console.log("Running on Vercel - No Static Files");
-} else {
+    } 
+    else {
     console.log("Running Locally - Serving Static Files");
     app.use(express.static(path.join(__dirname, '../public')));
     app.get('/', (req, res) => {
