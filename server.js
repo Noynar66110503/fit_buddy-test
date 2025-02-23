@@ -1,17 +1,20 @@
+const https = require('https');
 const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
+const hostname = '127.0.0.1';
+const fs = require('fs');
 
 
 const app = express();
 const port = 3000;
 
 const { readFileSync } = require("fs");
-var path = require("path");
-let cer_part = path.join(process.cwd(), 'isrgrootx1(1).pem');
+
+let cer_part = path.join(process.cwd(), 'isrgrootx1 (1).pem');
 // Middleware
 app.use(cors()); 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -30,7 +33,9 @@ const db = mysql.createConnection({
     password: 'LR8Gk2mWSrazG8e3', // แก้ไข
     database: 'fit_buddy',
     port: 4000,                  // ใช้ Port 4000 ตาม TiDB Cloud
-    ssl: { rejectUnauthorized: true } // เปิดใช้งาน SSL เพื่อความปลอดภัย
+    ssl: { 
+        ca:fs.readFileSync(cer_part)
+    }// เปิดใช้งาน SSL เพื่อความปลอดภัย
 });
 
 db.connect((err) => {
